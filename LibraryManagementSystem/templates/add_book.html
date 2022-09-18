@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <form method="POST"> {% csrf_token %}
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Library APP
+                    <div class="pull-right">
+                    <input type="search" placeholder="type here to search" aria-label="Search"  aria-describedby="search-addon" />
+                    <button type="button" class="btn btn-dark">Search</button>
+                    </div>
+                </div>
+          
+               
+            
+                <div class="panel panel-body" >
+                    <div class="container-fluid">
+                        <div class="row">
+                          <div class="col-sm-3 col-md-6"style="background-color:grey;">
+                            <p>Book Name:arabian king</p>
+                               <p>Author name:Richard
+                            </p>
+                          </div>
+                    
+                    <div class="form-group clearfix">
+                        <div class="container-fluid">
+                        <div class="row">
+                        <div class="col-sm-3 col-sm-push-3" >
+                            <label> Add Book</label>
+                        </div>
+                        </div>
+                        </div>
+                    
+                                     
+                       <div class="form-group clearfix">
+                        <div class="container-fluid">
+                        <div class="col-sm-4 col-sm-push-8" >
+                            <input id="enterId" type="text" class="form-control" name="bookid" placeholder="Enter book id" required="enter Book Id">
+                        </div>
+                        </div>
+                                            
+                     </div>
+                     <div class="form-group clearfix">
+                        <div class="col-sm-4 col-sm-push-8">    
+                            <input id="enterName" type="text" class="form-control mt-2" name="bookname"
+                            placeholder="Enter book name" required="enter Book name">
+                        </div>    
+                     </div>
+
+                    <div class="form-group clearfix">
+                        <div class="col-sm-4 col-sm-push-8"> 
+                         <input id="enterAuthorName" type="text" class="form-control mt-2" name="author"
+                            placeholder="enter author name " required="enter author name">
+                        </div>
+                    </div>
+                   <div class="form-group clearfix">
+                        <div class="col-sm-4 col-sm-push-8">
+                        <input id="enterPrice" type="text" class="form-control mt-2" name="price" 
+                            placeholder="enter book price " required="enter book price per day">
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-sm-push-9">
+                        <input   id="oddButton" type="submit" value="Add" class="btn btn-success">
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>    
+   </form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    {% if alert %}
+    alert("Book is added successfully.")
+    document.location = "/view_books"
+    {% endif %}
+</script>
+{% endblock %}
