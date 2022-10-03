@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>User page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <form action="{% url 'LibraryManagementSystem:search' %}" method="GET">
+                <input type="search" name="keyword" placeholder="Search product here." required>
+                <button>Search Product</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container text-center">
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+  <div class="row">
+    <div class="col-6 col-md-8">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Book Id</th>
+          <th scope="col">Book Name</th>
+          <th scope="col">Author Name</th>
+          <th scope="col">Price</th>
+            <th scope="col">Return Books</th>
+          <th scope="col">Get Books</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for p in  bookinfo %}
+        <tr>
+          <th scope="row">{{ p.enterId }}</th>
+          <td>{{ p.enterName }}</td>
+          <td>{{ p.enterAuthorName }}</td>
+          <td>{{ p.price }}</td>
+            <td><a href="{% url 'LibraryManagementSystem:returnBook' p.enterId %}">Return Books</a></td>
+          <td><a href="{% url 'LibraryManagementSystem:getBook' p.id %}" class="btn btn-primary" >Get Books</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+    <div class="col-6 col-md-4">
+        <h1> Payment Details </h1>
+        <span class="mb-0 text-muted">
+            {% if msg %}
+                {{ msg | safe }}
+            {% endif %}
+        </span>
+        <form  method="post">
+          <div class="col">
+            {% csrf_token %}
+                  <div class="form-group first">
+                        <label for="cartNumber">Cart Number</label>
+                          <input name="cartNumber" type="number" id="cartNumber" placeholder="Cart Number" class="from-control"  required value="{{ form.cartNumber }}">
+                  </div>
+                  <div class="form-group first">
+                        <label for="enterCcv">CCV</label>
+                          <input name="enterCcv" type="number" id="enterCcv" placeholder="Enter Ccv" class="from-control"  required value="{{ form.enterCcv }}">
+                  </div>
+                  <div class="form-group first">
+                        <label for="enterPhoneNumber">Phone No</label>
+                          <input name="enterPhoneNumber" type="number" id="enterPhoneNumber" placeholder="Phone No" class="from-control"  required value="{{ form.enterPhoneNumber }}">
+                  </div>
+                  <div class="form-group first">
+                        <label for="getBook2">Book Id</label>
+                          <input name="getBook" type="number" id="getBook2" placeholder="Book Id" class="from-control"  required value="{{ form.getBook }}">
+                  </div>
+                  <div class="form-group first">
+                        <label for="enterDays">No of Days</label>
+                          <input name="enterDays" type="number" id="enterDays" placeholder="No of Days" class="from-control"  required value="{{ form.enterDays }}">
+                  </div>
+                  <label>Payment</label>
+                  <input type="Submit" placeholder="Pay" class="btn btn-pill text-white btn-block btn-primary">
+
+          </div>
+        </form>
+
+</div>
+</div>
+</div>
+<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>

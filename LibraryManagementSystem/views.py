@@ -1,148 +1,210 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
-from django.http.response import JsonResponse,HttpResponse
-from rest_framework.parsers import JSONParser 
-from rest_framework import status 
-import mysql.connector as sql
-
-from LibraryManagementSystem.models import NewuserModel
-from LibraryManagementSystem.serializers import NewuserModelSerializer
+from rest_framework.views import APIView
+from django.http import HttpResponse
+from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework import status
+from rest_framework import serializers
 from rest_framework.decorators import api_view
-
-
-
-def home(request): 
-    return render(request, "base.html")
-
-def addbooks(request):
-    return render(request, "add_book.html")
-
-def editbooks(request):
-    return render(request, "edit_book.html")
-
-def payments(request):
-    return render(request, "payment_details.html")
-
-def grid(request):
-    return render(request, "grid.html")
-
-
-
-     
-
+from .forms import SignUpForm, LoginForm, BookForm
+from django.contrib.auth import login, authenticate
+from .models import *
+from .serializer import *
+from django.contrib import messages
 
 # Create your views here.
-def signaction(request):
-    if request.method == "POST":
-        usertype = request.POST.get('usertype')
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        mobilenumber = request.POST.get('phonenumber')
-        password = request.POST.get('password1')
-        confirmpassword = request.POST.get('password2')
-
-        data={'usertype':usetype,'username':username,'email':email,'phonenumber':phonenumber,
-        'password':password1,'confirmpassword':password2}
-        headers={'Content-Type':'application/json'}
-        read=requests.POST('http://127.0.0.1:8000/signaction',json=data,headers=headers)       
-        
-        
-        
-        return render(request, "signup.html")
-    else:
-        return render(request, "signup.html")
 
 
+def index(request):
+    return render(request, 'index.html')
 
-def loginaction(request):
-    global email,pwd1
-    if request.method=="POST":
-        m=sql.connect(host="mytestmysql",user="root",passwd="Rajiraghav*87",database='librarydb')
-        cursor=m.cursor()
-        d=request.POST
-        for key,value in d.items():
-            if key=="email":
-                email=value
-            if key=="password":
-                pwd1=value
-        
-        c="select * from users where email='{}' and password1='{}'".format(email,pwd1)
-        cursor.execute(c)
-        t=tuple(cursor.fetchall())
-        if t==():
-            return render(request,'error.html')
+
+def register(request):
+    msg = None
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            msg = 'user created'
+            return redirect('LibraryManagementSystem:login-view')
         else:
-            return render(request,"index.html")
-
-    return render(request,'login.html')
-
-
-
-
-@csrf_exempt 
-
-def usersApi(self,request):
-    if request.method=='GET':
-        users=NewuserserModel.objects.all()
-        users_serializer=NewuserserModeSerializer(users,many=True)
-        return JsonResponse(users_serializer.data,safe=False)
-    elif request.method=='POST':
-        users_serializer=NewuserModelSerializer(data=request.data)
-        if users_serializer.is_valid():
-            users_serializer.save()
-            return JsonResponse(users_serializer.data,status=status.HTTP_201_CREATED)
-        return JsonResponse(users_serializer.data,status=status.HTTP_400_BAD_RUQUEST)
-             
-    elif request.method=='PUT':
-         users_data=JSONParser().parse(request)
-         users=NewuserModel.objects.get(id=users_data['id'])
-         users_serializer=NewuserModelSerializer(users,data=users_data)
-         if users_serializer.is_valid():
-            users_serializer.save()
-            return JsonResponse("Updated Successfully",safe=False)
-         return JsonResponse("Failed to Update",safe=False)
-    elif request.method=='DELETE':
-        users=NewuserModel.objects.get(id=id)
-        users.delete()
-        return JsonResponse("Deleted Successfully",safe=False)
-    return JsonResponse("Failed to Delete",safe=False)
-    
-    
-   
-
-@csrf_exempt    
-
-def adminsApi(request,id=0):
-    if request.method=='GET':
-        admins=AdminModel.objects.all()
-        admins_serializer=AdminModelSerializer(admins,many=True)
-        return JsonResponse(admins_serializer.data,safe=False)
-    elif request.method=='POST':
-        admins_data=JSONParser().parse(request)
-        admins_serializer=AdminModelSerializer(data=admins_data)
-        if admins_serializer.is_valid():
-            admins_serializer.save()
-            return JsonResponse("Added Successfully",safe=False)
-        return JsonResponse("Failed to Add",safe=False)
-    elif request.method=='PUT':
-         admins_data=JSONParser().parse(request)
-         admins=AdminModel.objects.get(id=admins_data['id'])
-         admins_serializer=AdminModelSerializer(admins,data=admins_data)
-         if admins_serializer.is_valid():
-            admins_serializer.save()
-            return JsonResponse("Updated Successfully",safe=False)
-         return JsonResponse("Failed to Update",safe=False)
-    elif request.method=='DELETE':
-        admins=AdminModel.objects.get(id=id)
-        admins.delete()
-        return JsonResponse("Deleted Successfully",safe=False)
-    return JsonResponse("Failed to Delete",safe=False)
+            msg = 'form is not valid'
+    else:
+        form = SignUpForm()
+    return render(request,'register.html', {'form': form, 'msg': msg})
 
 
+def login_view(request):
+    form = LoginForm(request.POST or None)
+    msg = None
+    if request.method == 'POST':
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None and user.admin:
+                login(request, user)
+                return redirect('LibraryManagementSystem:adminpage')
+            elif user is not None and user.user:
+                login(request, user)
+                return redirect('LibraryManagementSystem:customer')
+            else:
+                msg= 'invalid credentials'
+        else:
+            msg = 'error validating form'
+    return render(request, 'login.html', {'form': form, 'msg': msg})
+def customer(request,id=0):
+    msg = None
+    form = PaymentDetailsForm()
+    bookinfo = Book.objects.all()
+    if request.method == "POST":
+        if id ==0:
+            form = PaymentDetailsForm(request.POST)
+        else:
+            payment = PaymentDetailsForm.objects.get(pk=id)
+            form = PaymentDetailsForm(request.POST, instance=payment)
+        if form.is_valid():
+            form.save()
+            msg = 'Payment is Done'
+            return redirect('LibraryManagementSystem:customer')
+        else:
+            msg = 'Payment is not Done'
+            return redirect('LibraryManagementSystem:customer')
+    else:
+        if id==0:
+            form = PaymentDetailsForm()
+        else:
+            book = PaymentDetails.objects.get(pk=id)
+            form = PaymentDetailsForm(request.POST,instance=book)
+    return render(request, 'customer.html', {'form': form, 'msg': msg, 'bookinfo': bookinfo})
+def getBook(request,id):
+    book = Book.objects.get(pk=id)
+    msg=None
+    #form = cartBookForm(instance=book)
+    cart = cartBooks(enterId=book.enterId,enterName=book.enterName,enterAuthorName=book.enterAuthorName,price=book.price)
+    cart.save()
+    msg = "book is taken"
+    return HttpResponse(msg)
+def returnBook(request, id):
+    cart = cartBooks.objects.get(enterId=id)
+    cart.delete()
+    msg = "book is returned"
+    return HttpResponse(msg)
+
+def adminpage(request,id=0):
+    msg=None
+    bookinfo = Book.objects.all()
+    if request.method == "POST":
+        if id==0:
+            form = BookForm(request.POST)
+        else:
+            book = Book.objects.get(pk=id)
+            form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            msg = 'Book is added successfully'
+            return redirect('LibraryManagementSystem:adminpage')
+        else:
+            msg = 'book is not added'
+            return redirect('LibraryManagementSystem:adminpage')
+    else:
+        if id==0:
+            form = BookForm()
+        else:
+            book = Book.objects.get(pk=id)
+            form=BookForm(instance=book)
+    return render(request, 'admin.html', {'form': form, 'msg': msg, 'bookinfo': bookinfo})
+
+class AllProducts(TemplateView):
+    template_name = "products.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_list'] = Book.objects.all()
+        return context
 
 
+def AddToCart(request):
+    return messages("Product is added to cart successfully")
 
 
+def bookdelete(request, id):
+    book = Book.objects.get(pk=id)
+    book.delete()
+    return redirect('LibraryManagementSystem:adminpage')
 
 
+def bookupdate(request, id):
+    bookinfo = Book.objects.all()
+    book = Book.objects.get(pk=id)
+    return render(request, "bookupdate.html",{'book': book,'bookinfo': bookinfo})
+
+def dobookupdate(request, id):
+    bookinfo = Book.objects.all()
+    enterId = request.POST.get("enterId")
+    enterName= request.POST.get("enterName")
+    enterAuthorName= request.POST.get("enterAuthorName")
+    price= request.POST.get("price")
+    book = Book.objects.get(pk=id)
+    book.enterId = enterId
+    book.enterName = enterName
+    book.enterAuthorName = enterAuthorName
+    book.price = price
+    book.save()
+    return redirect('LibraryManagementSystem:adminpage')
+
+class SearchView(TemplateView):
+    template_name = 'search.html'
+    def get_context_data(self, **kwargs):
+        context = super(SearchView, self).get_context_data(**kwargs)
+        kw = self.request.GET['keyword']
+        #kw = self.request.GET.get('keyword')
+        results = Book.objects.filter(enterName__icontains=kw)
+        context['results'] = results
+        return context
+'''
+class AdminSignupView(generics.GenericAPIView):
+    serializer_class = AdminSignupSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user":UserSerializer(user, context=self.get_serializer_context()).data,
+            "token":Token.objects.get(user=user).key,
+            "message": "account created successfully"
+        })
+'''
+class AdminSignupView(APIView):
+    def get(self, request):
+        user = User.objects.all()
+        serializer = UserSerializer(user, many=True)
+        return Response(serializer.data)
+
+class ClientSignupView(generics.GenericAPIView):
+    serializer_class = ClientSignupSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user":UserSerializer(user, context=self.get_serializer_context()).data,
+            "token":Token.objects.get(user=user).key,
+            "message": "account created successfully"
+        })
+
+@api_view(['POST'])
+def registrationView(request):
+    if request.method == 'POST':
+        serializer = AdminSignupSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            account = serializer.save()
+            data['response'] = "Successfully registered a new user"
+            data['username'] = account.username
+            data['email'] = account.email
+        else:
+            data = serializer.errors
+        return Response(data)
