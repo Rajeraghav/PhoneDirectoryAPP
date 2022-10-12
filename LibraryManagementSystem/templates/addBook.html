@@ -1,0 +1,29 @@
+{% extends 'customer.html' %}
+{% block body %}
+<div class="container">
+    <h2 style="margin-top:20px" align="center">Create Book</h2><hr>
+
+
+<form method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="form-group col-md-6">
+        <label for="enterId">book Id</label>
+        <input type="text" class="form-control"  name="enterId" id="enterId" required placeholder="Enter Full Name">
+        </div>
+        <div class="form-group col-md-6">
+        <label for="enterName">book Name</label>
+        <input type="text" class="form-control"  name="enterName" id="enterName" required placeholder="Enter Full Name">
+        </div>
+        <div class="form-group col-md-6">
+        <label for="enterAuthorName">Author Name</label>
+        <input type="text" class="form-control"  name="enterAuthorName" id="enterAuthorName" required placeholder="Enter Full Name">
+        </div>
+        <div class="form-group col-md-6">
+        <label for="enterPrice">Price</label>
+        <input type="text" class="form-control"  name="price" id="enterPrice" required placeholder="Enter Full Name">
+        </div>
+    </div>
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+
+<div class="container">
+    <div class="col-6 col-md-8">
+    <table class="table">
+        <h3>Search Results for <span>"{{request.GET.keyword }}"</span></h3>
+      <thead>
+        <tr>
+          <th scope="col">Book Id</th>
+          <th scope="col">Book Name</th>
+          <th scope="col">Author Name</th>
+          <th scope="col">Price</th>
+
+        </tr>
+      </thead>
+      <tbody>
+      {% for p in  results %}
+        <tr>
+          <th scope="row">{{ p.enterId }}</th>
+          <td>{{ p.enterName }}</td>
+          <td>{{ p.enterAuthorName }}</td>
+          <td>{{ p.price }}</td>
+
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+</div>
