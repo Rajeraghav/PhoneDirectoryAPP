@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <form method="POST"> {% csrf_token %}
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Library APP
+                    <div class="pull-right">
+                    <input type="search" placeholder="type here to search" aria-label="Search"  aria-describedby="search-addon" />
+                    <button type="button" class="btn btn-dark">Search</button>
+                    </div>
+                </div>
+          
+                <div class="panel-body">
+                    {% if error_message %}
+                        <p class="bg-danger p-d ml-b">{{ error_message }}</p>
+                    {% endif %}
+                    <div class="form-group clearfix">
+                        <div class="col-md-6">
+                            <input id="editId" type="text" class="form-control" name="bookid" placeholder="Enter book id" required="enter Book Id">
+                        </div>
+                    
+                     </div>
+                     <div class="form-group clearfix">
+                        <div class="col-md-6">    
+                            <input id="editName" type="text" class="form-control mt-2" name="bookname"
+                            placeholder="Enter book name" required="enter Book name">
+                        </div>    
+                     </div>
+
+                    <div class="form-group clearfix">
+                        <div class="col-md-6"> 
+                         <input id="editAutorName" type="text" class="form-control mt-2" name="author"
+                            placeholder="Enter author name" required="enter author name">
+                        </div>
+                    </div>
+                   <div class="form-group clearfix">
+                        <div class="col-md-6">
+                        <input id="editPrice" type="text" class="form-control mt-2" name="price" 
+                            placeholder="enter book price per day" required="enter book price per day">
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-md-offset-4">
+                        <input id="updateButton" type="submit" value="Update" class="btn btn-success">
+
+                    </div>
+                </div>
+            </div>
+        </div>    
+   </form>
+</div>
+{% endblock %}
+

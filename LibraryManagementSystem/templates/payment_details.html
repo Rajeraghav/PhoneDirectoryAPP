@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <form method="POST"> {% csrf_token %}
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Library APP
+                    <div class="pull-right">
+                    <input type="search" placeholder="type here to search" aria-label="Search"  aria-describedby="search-addon" />
+                    <button type="button" class="btn btn-dark">Search</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    {% if error_message %}
+                        <p class="bg-danger p-d ml-b">{{ error_message }}</p>
+                    {% endif %}
+                    <div class="form-group clearfix">
+                        <div class="col-md-6">
+                        <input id="cardNumber" type="text" class="form-control mt-2" name="cardnumber" 
+                            placeholder="Enter your card Number" required="enter your card number">
+                        </div>
+
+                    </div>
+    
+                    <div class="form-group clearfix">
+                        <div class="col-md-6">
+                        <input id="enterCcv" type="text" class="form-control mt-2" name="ccv" 
+                            placeholder="Enter your ccv" required="enter your ccv">
+                        </div> 
+                    </div>                    
+     
+                    <div class="form-group clearfix">
+                        <div class="col-md-6">
+                           <input id="enterPhoneno" type="text" class="form-control mt-2" name="phoneno"
+                            placeholder="Enter Phone No." required="enter your phone number">
+                        </div>
+                    </div>  
+                    <div class="form-group clearfix">
+                        <div class="col-md-6">
+                        <input id="getBook2" type="text" class="form-control mt-2" name="bookid" 
+                            placeholder="Enter book id" required="enter book id">
+                        </div>
+                    </div>    
+                    <div class="form-group clearfix">
+                        <div class="col-md-6">
+                            <input id="enterDays" type="number" class="form-control mt-2" name="days" 
+                            placeholder="Enter no of days need this book"
+                             required="Enter no of days need this book">
+                        </div>     
+                    </div>
+                    <div class="col-md-6 col-md-offset-4">    
+                            <input id="payButton" type="submit" value="Pay" class="btn btn-success">
+                    </div>
+                </div>
+            </div>
+     </div>
+   </div>
+</form>
+{% endblock %}

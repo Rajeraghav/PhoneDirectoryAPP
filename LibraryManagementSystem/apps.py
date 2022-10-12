@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class LibraryManagementSystemConfig(AppConfig):
+class LibrarymanagementsystemConfig(AppConfig):
+    
     name = 'LibraryManagementSystem'

@@ -1,80 +1,43 @@
-<!doctype html>
-{% load static %}
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+{% extends "base.html" %}
 
-    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
-
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-
-    <!-- Style -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    <title>Multiple user login</title>
-  </head>
-  <body>
-  <div class="content">
+  
     <div class="container">
-      <div class="row justify-content-center">
-        <!-- <div class="col-md-6 order-md-2">
-          <img src="images/undraw_file_sync_ot38.svg" alt="Image" class="img-fluid">
-        </div> -->
-        <div class="col-md-6 contents">
-          <div class="row justify-content-center">
-            <div class="col-md-12">
-              <div class="form-block">
-                  <div class="mb-4">
-                </div>
-
-              <span class="mb-0 text-muted">
-                {% if msg %}
-                    {{ msg | safe }}
-                {% else %}
-                    Login page
-                {% endif %}
-              </span>
-                <form  method="post">
-                    {% csrf_token %}
-                  <div class="form-group first">
-                    <label for="username">Username</label>
-                      {{ form.username }}
-                  </div>
-                  <div class="form-group last mb-4">
-                    <label for="password">Password</label>
-                    {{ form.password }}
-                  </div>
-
-                  <div class="d-flex mb-5 align-items-center">
-                    <label class="control control--checkbox mb-0"><span class="caption">Remember me</span>
-                      <input type="checkbox" checked="checked"/>
-                      <div class="control__indicator"></div>
-                    </label>
-                    <span class="ml-auto"><a href="#" class="forgot-pass">Forgot Password</a></span>
-                  </div>
-
-                  <input type="submit" value="Log In" class="btn btn-pill text-white btn-block btn-primary">
-                </form>
-              </div>
+            {% block content %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Login</div>
+                        <div class="panel-body">
+                            {% if error_message %}
+                                <p class="bg-danger p-d ml-b">{{ error_message }}</p>
+                            {% endif %}
+                            <div class="form-group clearfix">
+                                <label for ='email' class="col-md-4 control-label text-right"><b>UserEmail : 
+                                </label>
+                                <div class="col-md-6">
+                                    <input type="email" id="email" name="email" value="" class="form-control" required="Enter the Email">
+                                </div>
+                            </div>
+                            <div class="form-group clearfix">                                                                 
+                                <label for='password' class="col-md-4 control-label text-right">Password:</label>
+                            <div class="col-md-6">
+                                <input name="password1" id="password" type="password1" class="form-control">
+                            </div>
+                            </div>
+                    
+                            <div class="col-md-6 col-md-offset-4">
+                                <input name="login" id="loginButton" type="submit" value="Login" class="btn btn-success" /> &nbsp;
+                                New User?<a id="signupLink" href="http://localhost:8000/signup/">or Register</a>
+                            </div>
+                
+                </div> </div>
+             
             </div>
-          </div>
-
-        </div>
-
-      </div>
+            
+        </form>
     </div>
-  </div>
 
+ {% endblock %}
+    
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-  </body>
-</html>
