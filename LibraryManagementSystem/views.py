@@ -17,6 +17,12 @@ from django.db.models import Q
 from django.contrib import auth
 
 # Create your views here.
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
 def addUser(request):
     ms = None
     if request.method == 'POST':
@@ -31,6 +37,7 @@ def addUser(request):
     else:
         form = SignUpForm()
         return render(request, 'addUser.html', {'form': form, 'ms': ms})
+
 '''
 def register(request):
     msg = None
@@ -46,13 +53,12 @@ def register(request):
                     password1=password1,password2=password2)
         user.save()
         msg = 'user created'
-        return redirect('LibraryManagementSystem:login-view')
+        return redirect('account:login-view')
     else:
         msg = 'form is not valid'
         return render(request, 'register.html', {'msg': msg})
     return render(request, 'register.html', {'msg': msg})
-'''    
-
+'''
 
 def register(request):
     msg = None
@@ -61,13 +67,12 @@ def register(request):
         if form.is_valid():
             user = form.save()
             msg = 'user created'
-            return redirect('LibraryManagementSystem:login-view')
+            return redirect('account:login-view')
         else:
             msg = 'form is not valid'
     else:
         form = SignUpForm()
     return render(request, 'register.html', {'form': form, 'msg': msg})
-
 
 def login_view(request):
     msg = None
@@ -76,16 +81,27 @@ def login_view(request):
         password = request.POST.get("password")
         user = authenticate(username=username, password=password)
         who = user.adminORuser
+        #print(user + who)
         if user is not None and who == 'admin':
             login(request, user)
-            return redirect('LibraryManagementSystem:adminpage')
+            return redirect('account:adminpage')
         elif user is not None and who == 'user':
             login(request, user)
-            return redirect('LibraryManagementSystem:customer')
+            return redirect('account:customer')
+        if user is not None:
+            return HttpResponse('loin')
         else:
             msg = 'invalid credentials'
 
     return render(request, 'login.html', { 'msg': msg})
+
+
+'''
+            elif user is not None and user.adminORuser:
+                login(request, user)
+                return redirect('account:customer')
+'''
+
 
 def customer(request, id=0):
     msg = None
@@ -107,7 +123,7 @@ def customer(request, id=0):
             return HttpResponse(msg)
         else:
             msg = 'Payment is not Done'
-            return redirect('LibraryManagementSystem:customer')
+            return redirect('account:customer')
     else:
         if id == 0:
             form = PaymentDetailsForm()
@@ -147,10 +163,10 @@ def adminpage(request, id=0):
         if form.is_valid():
             form.save()
             msg = 'Book is added successfully'
-            return redirect('LibraryManagementSystem:adminpage')
+            return redirect('account:adminpage')
         else:
             msg = 'book is not added'
-            return redirect('LibraryManagementSystem:adminpage')
+            return redirect('account:adminpage')
     else:
         if id == 0:
             form = BookForm()
@@ -159,10 +175,24 @@ def adminpage(request, id=0):
             form = BookForm(instance=book)
     return render(request, 'admin.html', {'form': form, 'msg': msg, 'bookinfo': bookinfo})
 
+
+class AllProducts(TemplateView):
+    template_name = "products.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_list'] = Book.objects.all()
+        return context
+
+
+def AddToCart(request):
+    return messages("Product is added to cart successfully")
+
+
 def bookdelete(request, id):
     book = Book.objects.get(pk=id)
     book.delete()
-    return redirect('LibraryManagementSystem:adminpage')
+    return redirect('account:adminpage')
 
 
 def bookupdate(request, id):
@@ -183,7 +213,7 @@ def dobookupdate(request, id):
     book.enterAuthorName = enterAuthorName
     book.price = price
     book.save()
-    return redirect('LibraryManagementSystem:adminpage')
+    return redirect('account:adminpage')
 
 
 class SearchView(TemplateView):
@@ -198,6 +228,57 @@ class SearchView(TemplateView):
         return context
 
 
+'''
+class AdminSignupView(generics.GenericAPIView):
+    serializer_class = AdminSignupSerializer
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user":UserSerializer(user, context=self.get_serializer_context()).data,
+            "token":Token.objects.get(user=user).key,
+            "message": "account created successfully"
+        })
+'''
+
+
+class AdminSignupView(APIView):
+    def get(self, request):
+        user = User.objects.all()
+        serializer = UserSerializer(user, many=True)
+        return Response(serializer.data)
+
+
+class ClientSignupView(generics.GenericAPIView):
+    serializer_class = ClientSignupSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            "token": Token.objects.get(user=user).key,
+            "message": "account created successfully"
+        })
+
+
+@api_view(['POST'])
+def registrationView(request):
+    if request.method == 'POST':
+        serializer = AdminSignupSerializer(data=request.data)
+        data = {}
+        if serializer.is_valid():
+            account = serializer.save()
+            data['response'] = "Successfully registered a new user"
+            data['username'] = account.username
+            data['email'] = account.email
+        else:
+            data = serializer.errors
+        return Response(data)
+
+
 def logout_view(request):
     logout(request)
-    return redirect('LibraryManagementSystem:login-view')
+    return redirect('account:login-view')
