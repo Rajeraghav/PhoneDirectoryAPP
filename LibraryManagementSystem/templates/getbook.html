@@ -1,0 +1,11 @@
+{% extends "custnavbar.html" %}
+{% block content %}
+<h1>"book is taken"</h1>
+<script>
+    function redirect(){
+       window.location.href = "/customer";
+    }
+
+    setTimeout(redirect, 4000);
+</script>
+{% endblock %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-        <div class="container">
+        <div class="container-fluid">
             <form method="post">
                 {% csrf_token %}
                 <div class="col-md-8 col-md-offset-2">
@@ -14,12 +14,19 @@
                     <div class="form-group clearfix" > 
                         <label for="user" class="col-md-4 control-label text-right">Choose User Role <span class="text-red">*</span>:</label>
                         <div class="col-md-6">    
-                        <select id="admin/user"name="user">
-                        <option value="Admin"> admin    </option>
-                        <option value="Student"> user </option>
+                        <select id="admin/user"name="adminORuser">
+                        <option value="{{admin"}}>admin</option>
+                        <option value="{{user"}}>user</option>
                         </select>    
                         </div>                         
-                    </div>                  
+                    </div> 
+                    <div class="form-group clearfix" >
+                        <label for='text' class="col-md-4 control-label text-right">Enter Email:
+                          <span class="text-red">*</span>:</label>  
+                        <div class="col-md-6">
+                        <input type="email" id="email" placeholder="Enter your Email" name="email"  required>
+                        </div>  
+                      </div>                  
                     <div class="form-group clearfix">
                         <label for='username'class="col-md-4 control-label text-right">Enter UserName:
                           <span class="text-red">*</span>:</label>                    
@@ -27,26 +34,19 @@
                             <input type='text' id="username" placeholder='Enter User name' name="username" required>
                         </div>                                              
                     </div>                    
-                    <div class="form-group clearfix" >
-                        <label for='text' class="col-md-4 control-label text-right">Enter Email:
-                          <span class="text-red">*</span>:</label>  
-                        <div class="col-md-6">
-                        <input type="email" id="email" placeholder="Enter your Email" name="email"  required>
-                        </div>  
-                      </div>                                         
+                                                            
                     <div class="form-group clearfix">
                         <label for='Phonenumber' class="col-md-4 control-label text-right">Enter Mobilenumber:
                          <span class="text-red">*</span>:</label>          
                         <div class="col-md-6">
-                         <input type="number" id="mobileNumber" placeholder="Enter Mobile number"name="phonenumber" required> 
+                         <input type="number" id="mobileNumber" placeholder="Enter Mobile number"name="mobileNumber" required> 
                         </div>
                     </div>
-                  <div class="form-group clearfix">
+                <div class="form-group clearfix">
                     <label for='password'  class="col-md-4 control-label text-right">Enter Password :
                        <span class="text-red">*</span>: </label>
                     <div class="col-md-6">
-                        <input type="password" id="password" placeholder="Enter Password"  required 
-                        name="password1">
+                        <input type="password" id="password" placeholder="Enter Password"  required name="password1">
                     </div>                      
                 </div>  
                 <div class="form-group clearfix">
@@ -58,7 +58,7 @@
                 </div>   
                                    
                 <div class="col-md-6 col-md-offset-4">
-                    <input type="submit" id="submitButton" value="Signup" class="btn btn-success"> 
+                    <input type="submit" id="submitButton" value="register" class="btn btn-success"> 
                     {% if messages %}
                     {% for result in messages %}
                   <b style="color:green;"> {{result}}</b> 
@@ -66,7 +66,7 @@
                   {% endif  %}
                 </div>
                 <div class="col-md-6 col-md-offset-4">
-                    Already have an account<a id="signinLink" href="{% url 'LibraryManagementSystem:login-view' %}"> Login</a> 
+                    Already have an account<a id="signinLink" href="{% url 'LibraryManagementSystem:login_view' %}"> Login</a> 
                  </div>
              </div>  
         </form>

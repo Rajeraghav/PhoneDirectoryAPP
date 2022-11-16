@@ -4,7 +4,7 @@ from . import apiviews
 app_name = "LibraryManagementSystem"
 urlpatterns = [
     #path('', views.index, name= 'index'),
-    path('', views.login_view, name='login-view'),
+    path('', views.login_view, name='login_view'),
     path('register/', views.register, name='register'),
     path('adminpage/', views.adminpage, name='adminpage'),
     path('customer/', views.customer, name='customer'),

@@ -1,88 +1,72 @@
-<!doctype html>
-{% load static %}
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+{% extends "newindex.html" %}
 
-    <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
-
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-
-    <!-- Style -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    <title>Multiple user login</title>
-  </head>
-<body style="background-image:url('https://www.skoolbeep.com/blog/wp-content/uploads/2020/12/HOW-DO-YOU-DESIGN-A-LIBRARY-MANAGEMENT-SYSTEM-min.png');
-               background-repeat:no-repeat;
-               background-size: cover;
-               ">
-  <div class="content">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6 contents">
-          <div class="row justify-content-center">
-            <div class="col-md-12">
-              <div class="form-block">
-                  <span class="mb-0 text-muted">
-                {% if ms %}
-                    {{ ms | safe }}
-                {% else %}
-
-                {% endif %}
-              </span>
-                <form  method="post">
-                    {% csrf_token %}
-                  <div class="form-row field-adminORuser">
-                    <div>
-                        <label>AdminORuser:</label>
-                      {{ form.adminORuser }}
+{% block content %}
+        <div class="container-fluid">
+            <form method="post">
+                {% csrf_token %}
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Add User</div>
+                        <div class="panel-body">
+                            {% if error_message %}
+                                <p class="bg-danger p-d ml-b">{{ error_message }}</p>
+                            {% endif %}
+                    <div class="form-group clearfix" > 
+                        <label for="user" class="col-md-4 control-label text-right">Choose User Role <span class="text-red">*</span>:</label>
+                        <div class="col-md-6">    
+                        <select id="admin/user"name="adminORuser">
+                        <option value="admin">admin</option>
+                        <option value="user">user</option>
+                        </select>    
+                        </div>                         
+                    </div> 
+                    <div class="form-group clearfix" >
+                        <label for='text' class="col-md-4 control-label text-right">Enter Email:
+                          <span class="text-red">*</span>:</label>  
+                        <div class="col-md-6">
+                        <input type="email" id="email" placeholder="Enter your Email" name="email"  required>
+                        </div>  
+                      </div>                  
+                    <div class="form-group clearfix">
+                        <label for='username'class="col-md-4 control-label text-right">Enter UserName:
+                          <span class="text-red">*</span>:</label>                    
+                        <div class="col-md-6">
+                            <input type='text' id="username" placeholder='Enter User name' name="username" required>
+                        </div>                                              
+                    </div>                    
+                                                            
+                    <div class="form-group clearfix">
+                        <label for='Phonenumber' class="col-md-4 control-label text-right">Enter Mobilenumber:
+                         <span class="text-red">*</span>:</label>          
+                        <div class="col-md-6">
+                         <input type="number" id="mobileNumber" placeholder="Enter Mobile number"name="mobileNumber" required> 
+                        </div>
                     </div>
+                <div class="form-group clearfix">
+                    <label for='password'  class="col-md-4 control-label text-right">Enter Password :
+                       <span class="text-red">*</span>: </label>
+                    <div class="col-md-6">
+                        <input type="password" id="password" placeholder="Enter Password"  required name="password1">
+                    </div>                      
+                </div>  
+                <div class="form-group clearfix">
+                    <label for='password' class="col-md-4 control-label text-right">Confirm Password :
+                      <span class="text-red">*</span>: </label>
+                    <div class="col-md-6">
+                        <input type="password" id="confirmPassword" placeholder="Confirm Password" name="password2" > 
+                    </div> 
+                </div>   
+                                   
+                <div class="col-md-6 col-md-offset-4">
+                    <input type="submit" id="submitButton" value="Adduser" class="btn btn-success"> 
+                    {% if messages %}
+                    {% for result in messages %}
+                  <b style="color:green;"> {{result}}</b> 
+                  {% endfor %}
+                  {% endif  %}
                 </div>
-                  <div class="form-group first">
-                    <label >Email</label>
-                    {{ form.email }}
-                  </div>
-                  <div class="form-group first">
-                    <label >Username</label>
-                    {{ form.username }}
-                  </div>
-                  <div class="form-group first">
-                    <label for="mobileNumber" >Mobile Number</label>
-                    <input name="mobileNumber" type="number" id="mobileNumber"   required value="{{ form.mobileNumber }}">
-                  </div>
-                  <div class="form-group last mb-4">
-                    <label>Password</label>
-                    {{ form.password1 }}
-                  </div>
-                  <div class="form-group last mb-4">
-                    <label>confirm Password</label>
-                    {{ form.password2 }}
-                  </div>
-
-                    <span class="text-error">{{ form.errors }}</span>
-                  <input type="submit"  value="Add User"  id="submitButton" class="btn btn-pill text-white btn-block btn-primary">
-
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+                
+             </div>  
+        </form>
     </div>
-  </div>
-
-
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-  </body>
-</html>
+{% endblock %}

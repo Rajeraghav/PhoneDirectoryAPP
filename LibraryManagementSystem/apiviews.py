@@ -2,7 +2,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .serializer import *
-from django.db.models import Q
 # Create your views here.
 @api_view(['GET'])
 def apiOverview(request):
@@ -90,7 +89,7 @@ def bookDelete(request, pk):
 
 @api_view(['GET'])
 def booksearch(request, pk):
-    book = Book.objects.filter(Q(enterName__icontains=kw) | Q(enterAuthorName__icontains=kw))
+    book = Book.objects.filter(enterName__icontains=pk)
     serializer = BookSerializer(book, many=True)
     return Response(serializer.data)
 
@@ -125,6 +124,9 @@ def user(request):
 @api_view(['GET'])
 def userList(request):
     user = User.objects.all()
+
     #user = addUser.objects.all()
     serializer = AddUserSerializer(user, many=True)
     return Response(serializer.data)
+
+

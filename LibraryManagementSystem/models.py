@@ -9,9 +9,7 @@ from django.dispatch import receiver
 
 choice = (('admin','admin'),('user','user'))
 class User(AbstractUser):
-    #admin = models.BooleanField('Is admin', default=False)
-    #user = models.BooleanField('Is user', default=False)
-    adminORuser = models.CharField(max_length=10,choices=choice, default='user')
+    adminORuser = models.CharField(max_length=10,choices=choice)
     email = models.CharField(max_length=100, unique=True, null=True, blank=True)
     username = models.CharField(null=True, unique=True, max_length=100, blank=True)
     mobileNumber = models.CharField(null=True, blank=True, max_length=10)
@@ -49,4 +47,13 @@ class cartBooks(models.Model):
     def __int__(self):
         return self.id
 
-
+'''
+class addUser(models.Model):
+    admin = models.BooleanField('Is admin', default=False)
+    user = models.BooleanField('Is user', default=False)
+    email = models.CharField(max_length=100, unique=True,null=True, blank=True)
+    username = models.CharField(null=True, max_length=100,blank=True)
+    mobileNumber = models.IntegerField(null=True, blank=True)
+    password1 = models.CharField(null=True, blank=True, max_length=100)
+    password2 = models.CharField(null=True, blank=True, max_length=100)
+'''
